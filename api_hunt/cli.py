@@ -15,6 +15,7 @@ def main():
     parser.add_argument('-n','--name',action="store",nargs=1,type=str,help="Scans a single file for API key's takes filepath as argument e.g -> hunt -n 'file_path'")
     parser.add_argument('-c','--config',action="store",nargs=1,type=str,help="Takes an API key as argument to configure gemini to be used to get custom regex pattern for your API key e.g -> hunt -c 'API_KEY'")
     parser.add_argument('-re','--regex',action="store",nargs=2,type=str,help="Takes a key_name and API key as arguments to give regex of it which will be added automatically to custom patterns folder to be used to search for API key's  e.g -> hunt -re 'key_name' 'API_key' ")
+    parser.add_argument('-v','--verbose',action="store_true",help="Gives verbose result i.e also includes the Matched Pattern in the Output")
     args = parser.parse_args()
 
     if args.display:
@@ -30,7 +31,10 @@ def main():
     
     elif args.name:
         print(f"Scanning file {args.name[0]}")
-        hunt_local(args.name[0])
+        if args.verbose:
+            hunt_local(args.name[0],verbose=True)
+        else:
+            hunt_local(args.name[0],verbose=False)
 
     elif args.config:
         print("setting api key")
@@ -39,13 +43,17 @@ def main():
     elif args.regex:
         print("getting the regex pattern")
         get_regex_add(args.regex[0],args.regex[1])
-  
-    else:
-        hunt()
+    
+    elif args.verbose:
+        hunt(verbose=True)
 
-def hunt():
+    else:
+        hunt(verbose=False)
+
+
+def hunt(verbose):
     print("Scanning for secrets...")
-    asyncio.run(run_scan_git())
+    asyncio.run(run_scan_git(verbose))
 
 
 def main_display():
@@ -54,8 +62,8 @@ def main_display():
 def remove(key_name):
     delete_data_from_custom(key_name)
 
-def hunt_local(file_path):
-    asyncio.run(run_scan_local(file_path))
+def hunt_local(file_path,verbose):
+    asyncio.run(run_scan_local(file_path,verbose))
 
 
 def get_regex_add(key_name,api_key):

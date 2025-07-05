@@ -16,6 +16,8 @@
 - ⚡️ Async scanning for fast performance
 - 🛠️ Custom regex patterns (add/remove/display)
 - 🤖 Gemini integration for automatic regex generation (with API key anonymization)
+- 🎨 Colored output for better readability
+- 📊 Verbose mode to show matched patterns
 
 ---
 
@@ -36,9 +38,17 @@ pip install api-hunter
   ```bash
   hunt
   ```
+- **Scan all staged files with verbose output:**
+  ```bash
+  hunt -v
+  ```
 - **Scan a specific file:**
   ```bash
   hunt -n path/to/file.py
+  ```
+- **Scan a specific file with verbose output:**
+  ```bash
+  hunt -n path/to/file.py -v
   ```
 - **Add a custom pattern:**
   ```bash
@@ -70,8 +80,14 @@ pip install api-hunter
 # Scan all staged files in your git repo
 hunt
 
+# Scan all staged files with verbose output (shows matched patterns)
+hunt -v
+
 # Scan a specific file
 hunt -n path/to/file.py
+
+# Scan a specific file with verbose output
+hunt -n path/to/file.py -v
 
 # Add a custom pattern
 hunt -a "my_service" "my_service_[a-zA-Z0-9]{32}"
@@ -97,3 +113,5 @@ hunt -re "my_service" "sk-abc123..."
 - Only files with common code/config extensions are scanned (see `api_hunt/patterns.py`).
 - For Gemini integration, you need a valid Google Gemini API key.
 - **Privacy:** When generating a regex for your API key using Gemini, API Hunter randomizes the digits in your key before sending it to the LLM. This ensures your actual API key is never exposed to any third party.
+- **Verbose Mode:** Use `-v` flag to see the actual matched patterns in colored output (yellow for file names, green for line numbers, red for matched patterns).
+- **Custom Patterns:** Use unique key names when adding custom patterns, as the remove command identifies patterns by their key name for deletion.

@@ -120,9 +120,14 @@ async def process(file):
     return await scan_content(content,file)
 
 
-async def run_scan_local(file_path):
+async def run_scan_local(file_path,verbose=False):
     
     try:
+        YELLOW_BG = "\033[30;43m"
+        GREEN_BG  = "\033[30;42m"
+        RED_BG    = "\033[30;41m"
+        RESET     = "\033[0m"
+
         with open(file_path,"r") as file:
             content = file.read()
         findings = await scan_content(content,file_path)
@@ -130,16 +135,28 @@ async def run_scan_local(file_path):
         unique_logs = []
         seen = set()
         for res in findings:
-            key = (res.get("file_name",''),res.get("line",''),res.get('match',''))
-            if key not in seen:
-                seen.add(key)
+            key = (res.get("file_name",''),res.get("line",''),res.get("match",''))
+            check = (key[0],key[1])
+            if check not in seen:
+                seen.add(check)
                 unique_logs.append(key)
 
         if not unique_logs:
             print("No Possible key found.")
         else:
             for logs in unique_logs:
-                print(f"found possible API key in file {logs[0]}, line : {logs[1]}, matched pattern : {logs[2]}")
+                    if verbose:
+                        print(
+                            f"found possible API key in file {YELLOW_BG}{logs[0]}{RESET}, "
+                            f"{GREEN_BG} line : {logs[1]}{RESET}, "
+                            f"matched pattern : {RED_BG}{logs[2]}{RESET}"
+                        )
+                    else:
+                        print(
+                            f"found possible API key in file {YELLOW_BG}{logs[0]}{RESET}, "
+                            f"{GREEN_BG} line : {logs[1]}{RESET}, "
+                        )
+      
 
     except FileNotFoundError as e:
         print(f"File not found error {e}")
@@ -151,9 +168,15 @@ async def run_scan_local(file_path):
 
 
 
-async def run_scan_git():
+async def run_scan_git(verbose=False):
     if is_git_directory():
         files = get_staged_files()
+
+        YELLOW_BG = "\033[30;43m"
+        GREEN_BG  = "\033[30;42m"
+        RED_BG    = "\033[30;41m"
+        RESET     = "\033[0m"
+
         if isinstance(files,list) and len(files)>0:
             tasks = [process(file) for file in files
                     if should_search(file)]
@@ -165,16 +188,27 @@ async def run_scan_git():
             unique_logs = []
             seen = set()
             for res in flat_results:
-                key = (res.get("file_name",''),res.get("line",''),res.get('match',''))
-                if key not in seen:
-                    seen.add(key)
+                key = (res.get("file_name",''),res.get("line",''),res.get("match",''))
+                check = (key[0],key[1])
+                if check not in seen:
+                    seen.add(check)
                     unique_logs.append(key)
 
             if not unique_logs:
                 print("No Possible key found.")
             else:
                 for logs in unique_logs:
-                    print(f"found possible API key in file {logs[0]}, line : {logs[1]}, matched pattern : {logs[2]}")
+                    if verbose:
+                        print(
+                            f"found possible API key in file {YELLOW_BG}{logs[0]}{RESET}, "
+                            f"{GREEN_BG} line : {logs[1]}{RESET}, "
+                            f"matched pattern : {RED_BG}{logs[2]}{RESET}"
+                        )
+                    else:
+                        print(
+                            f"found possible API key in file {YELLOW_BG}{logs[0]}{RESET}, "
+                            f"{GREEN_BG} line : {logs[1]}{RESET}, "
+                        )
 
         elif len(files)==0:
             print("no files found in index please git add to add files")
