@@ -54,6 +54,8 @@ pip install api-hunter
   ```bash
   hunt -a "my_service" "my_service_[a-zA-Z0-9]{32}"
   ```
+  > **Note:** Use unique key names when adding patterns, as the remove command identifies patterns by their key name.
+
 - **Remove a custom pattern:**
   ```bash
   hunt -r "my_service"
@@ -115,3 +117,52 @@ hunt -re "my_service" "sk-abc123..."
 - **Privacy:** When generating a regex for your API key using Gemini, API Hunter randomizes the digits in your key before sending it to the LLM. This ensures your actual API key is never exposed to any third party.
 - **Verbose Mode:** Use `-v` flag to see the actual matched patterns in colored output (yellow for file names, green for line numbers, red for matched patterns).
 - **Custom Patterns:** Use unique key names when adding custom patterns, as the remove command identifies patterns by their key name for deletion.
+
+---
+
+## 🔍 Default Detection Patterns
+
+API Hunter comes with built-in patterns to detect various types of secrets:
+
+### Cloud Services
+- **AWS:** Access Keys (`AKIA[0-9A-Z]{16}`), Secret Keys (`[0-9a-zA-Z/+]{40}`)
+- **Google:** API Keys (`AIza[0-9A-Za-z\-_]{35}`)
+- **Azure:** Generic keys (`[a-f0-9]{32}` or `[A-Za-z0-9+/=]{40,}`)
+- **DigitalOcean:** API Tokens (`dop_v1_[0-9a-f]{64}`)
+
+### Development Platforms
+- **GitHub:** Personal Access Tokens (`gh[opusr]_[0-9a-zA-Z]{36}`)
+- **Slack:** Bot/App Tokens (`xox[boaprs]-[0-9]{12}-[0-9]{12}-[0-9a-zA-Z]{24}`)
+
+### AI Services
+- **OpenAI:** API Keys (`sk-[a-zA-Z0-9]{48}`, `sk-proj-[a-zA-Z0-9]{48}`)
+- **Claude:** API Keys (`sk-ant-api03-[a-zA-Z0-9\-_]{95}`)
+
+### Database & Backend
+- **Supabase:** JWT Tokens (`eyJ[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+`), Service Keys (`sbp_[a-zA-Z0-9]{40}`)
+- **MongoDB Atlas:** Connection Strings (`mongodb\+srv:\/\/[^:\s]+:[^@\s]+@[^\/\s]+`)
+
+### Payment Services
+- **Stripe:** Live/Test Keys (`sk_live_[0-9a-zA-Z]{24}`, `sk_test_[0-9a-zA-Z]{24}`, etc.)
+- **Square:** API Keys (`sq0[a-z]{3}-[0-9a-zA-Z\-_]{22,43}`)
+- **Shopify:** Access Tokens (`shpat_[0-9a-fA-F]{32}`, etc.)
+
+### Communication Services
+- **Twilio:** Account/Service Keys (`SK[0-9a-fA-F]{32}`, `AC[0-9a-fA-F]{32}`)
+- **SendGrid:** API Keys (`SG\.[0-9a-zA-Z\-_]{22}\.[0-9a-zA-Z\-_]{43}`)
+- **Mailgun:** API Keys (`key-[0-9a-zA-Z]{32}`)
+
+### Generic Patterns
+- **API Keys:** `api_key`, `apiKey`, `API_KEY` with values
+- **Secret Keys:** `secret_key`, `secretKey`, `SECRET_KEY` with values
+- **Access Tokens:** `access_token`, `accessToken`, `ACCESS_TOKEN` with values
+- **Auth Tokens:** `auth_token`, `authToken`, `AUTH_TOKEN` with values
+- **Bearer Tokens:** `Bearer [token]` format
+- **Private Keys:** RSA, EC, DSA, OpenSSH, PGP private key headers
+
+### Supported File Extensions
+- **Code:** `.py`, `.js`, `.ts`, `.jsx`, `.tsx`, `.java`, `.go`, `.rb`, `.php`, `.cs`, `.cpp`, `.c`, `.h`, `.hpp`
+- **Scripts:** `.sh`, `.bash`, `.zsh`, `.fish`
+- **Config:** `.yml`, `.yaml`, `.json`, `.xml`, `.env`, `.config`, `.conf`, `.ini`
+- **Docs:** `.txt`, `.md`, `.rst`
+- **Infrastructure:** `.sql`, `.tf`, `.tfvars`
