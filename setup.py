@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='api-hunter',
-    version='0.1.0',
+    name='api_hunter',
+    version='0.1.2',
     packages=find_packages(),
     install_requires=["google-genai","python-dotenv","pydantic"],
     entry_points={
@@ -10,7 +10,7 @@ setup(
             'hunt=api_hunt.cli:main',  
         ],
     },
-    author='Your Name',
+    author='Joe Mama',
     description='Scan staged Git files for secrets like API keys.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',

@@ -29,7 +29,6 @@ def delete_data_from_custom(key_name):
         
         print("File is empty or not found")
         return
-    print(FILE_PATH)
     with open(FILE_PATH,'r') as file:
         data = json.load(file)
 

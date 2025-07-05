@@ -32,6 +32,30 @@ pip install api-hunter
 
 ---
 
+## 🗑️ Uninstallation
+
+### Remove the package
+
+```bash
+pip uninstall api-hunter
+```
+
+### Remove created files and directories
+
+The tool creates configuration files in your home directory. To completely remove all traces:
+
+```bash
+# Remove the configuration directory and all its contents
+rm -rf ~/api_hunt_envs/
+```
+
+This will remove:
+- Custom regex patterns (`custom_pattern.json`)
+- Gemini API key configuration
+- Any other configuration files created by the tool
+
+---
+
 ## 🛠️ CLI Commands
 
 - **Scan all staged files in git repo:**
@@ -117,6 +141,31 @@ hunt -re "my_service" "sk-abc123..."
 - **Privacy:** When generating a regex for your API key using Gemini, API Hunter randomizes the digits in your key before sending it to the LLM. This ensures your actual API key is never exposed to any third party.
 - **Verbose Mode:** Use `-v` flag to see the actual matched patterns in colored output (yellow for file names, green for line numbers, red for matched patterns).
 - **Custom Patterns:** Use unique key names when adding custom patterns, as the remove command identifies patterns by their key name for deletion.
+
+---
+
+## ⚠️ False Positives & Detection Trade-offs
+
+API Hunter uses pattern-based detection, which means it may generate **false positives** - detecting strings that look like secrets but aren't actually sensitive. This is an inherent limitation of regex-based scanning.
+
+### Why False Positives Occur
+- Pattern matching can't distinguish between real API keys and similar-looking strings
+- Some legitimate code may contain strings that match secret patterns
+- Generic patterns (like `api_key`) may catch variable names or example values
+
+### The Trade-off: Detection vs. Privacy
+We prioritize **detection over precision** because:
+- **Better safe than sorry:** It's better to catch a false positive than miss a real secret
+- **Manual review:** You can quickly verify if a detected pattern is actually sensitive
+- **Privacy protection:** Pattern-based detection keeps your actual secrets local
+
+### Alternative: LLM-Based Filtering
+While we could use an LLM to filter out false positives, this would require:
+- Sending your detected patterns to an external service
+- **Risk of exposing real secrets** to third-party LLMs
+- Additional API costs and latency
+
+**Our approach:** Keep detection local and let you manually review results, ensuring your secrets never leave your machine.
 
 ---
 
