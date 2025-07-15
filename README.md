@@ -26,7 +26,7 @@
 ### From PyPI
 
 ```bash
-pip install api-hunter
+pip install apikey-hunter
 
 ```
 
@@ -37,7 +37,7 @@ pip install api-hunter
 ### Remove the package
 
 ```bash
-pip uninstall api-hunter
+pip uninstall apikey-hunter
 ```
 
 ### Remove created files and directories
